@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Bootstrap, from Twitter</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <!-- Bootstrap -->
+    <link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <link href="css/bootstrap-responsive.min.css" rel="stylesheet" media="screen">
+    <style type="text/css">
+        body {
+            padding: 10px;
+        }
+    </style>
+</head>
+<body>
+<script src="js/jquery-1.9.1.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/knockout.js"></script>
+<script src="js/riak-connector.js"></script>
+
+<div class="hero-unit">
+    <h1>Riak Client - DEMO</h1>
+    <p>This is a client to use the Riak Distributed Storage</p>
+</div>
+
+
+<div class="row">
+    <div class="span3">
+        <div class="well">
+            <h3>Store</h3>
+            <input type="text" placeholder="Enter Bucket Name Here..."><br>
+            <input type="text" placeholder="Enter key Here..."><br>
+            <textarea rows="4" placeholder="Enter Content Here..."></textarea><br>
+            <button type="submit" class="btn btn-primary"><i class="icon-hdd icon-white"></i> Store</button>
+            <button type="button" class="btn">Clear</button>
+        </div>
+    </div>
+    <div class="span10">
+        <div class="well">
+            <h3>Retrieve</h3>
+            <div class="row">
+                <div class="span3">
+                    <label>Buckets</label>
+                    <select multiple="false" data-bind="options: buckets">
+
+                    </select>
+                </div>
+                <div class="span3">
+                    <label>Keys</label>
+                    <select multiple="false" data-bind="options:keys">
+
+                    </select>
+                </div>
+                <div class="span3">
+                    <label>Content</label>
+                    <textarea rows="3"></textarea>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary"><i class="icon-edit icon-white"></i> Update</button>
+            <button type="submit" class="btn btn-primary"><i class="icon-trash icon-white"></i> Delete</button>
+        </div>
+    </div>
+
+</div>
+</body>
+</html>
