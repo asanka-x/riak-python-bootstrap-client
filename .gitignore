@@ -36,5 +36,5 @@ nosetests.xml
 
 # IDE related files
 .idea
-#index.html#
+\#index.html#
 index.html~
