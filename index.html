@@ -44,19 +44,19 @@
             <div class="row">
                 <div class="span3">
                     <label>Buckets</label>
-                    <select multiple="false" data-bind="options: buckets">
+                    <select multiple="false" data-bind="options:buckets,value:selectedBucket">
 
                     </select>
                 </div>
                 <div class="span3">
-                    <label>Keys</label>
-                    <select multiple="false" data-bind="options:keys">
+                    <label>Bucket <strong data-bind="text:selectedBucket"></strong> Keys</label>
+                    <select multiple="false" data-bind="options:keys,value:selectedKey">
 
                     </select>
                 </div>
                 <div class="span3">
-                    <label>Content</label>
-                    <textarea rows="3"></textarea>
+                    <label>Key <strong data-bind="text:selectedKey"></strong> Content</label>
+                    <textarea rows="5" data-bind="value:content"></textarea>
                 </div>
             </div>
             <button type="submit" class="btn btn-primary"><i class="icon-edit icon-white"></i> Update</button>

@@ -6,34 +6,66 @@
  * To change this template use File | Settings | File Templates.
  */
 $(document).ready(function(){
-    var viewModel = {
-        buckets : ko.observableArray(['France', 'Germany', 'Spain','Sri lanka','America']), // These are the initial options
-        keys:ko.observableArray(['France', 'Germany', 'Spain','Sri lanka','America'])
+
+    var viewModel = function(){
+        var self=this;
+
+        this.buckets = ko.observableArray(); // These are the initial options
+        this.keys=ko.observableArray();
+        this.selectedBucket=ko.observable();
+        this.selectedKey=ko.observable("");
+        this.content=ko.observable("");
+
+        this.bucketClicked=ko.computed(function(){
+            if(self.selectedBucket()!=undefined){
+                console.log("BUCKET "+self.selectedBucket());
+                $.ajax({
+                    type: "GET",
+                    url: 'http://localhost/riak-python-bootstrap-client/rest-proxy.php?csurl=http://192.168.1.2:8998/buckets/'+self.selectedBucket()+'/keys?keys=true',
+                    dataType:"json",
+                    success: function(result) {
+                        console.log("SUCCESS! DATA : "+result.keys);
+                        self.keys(result.keys);
+                    },
+                    error: function(e) {
+                        console.log("ERROR : "+e);
+                    }});
+            }
+        });
+
+        this.keyClicked=ko.computed(function(){
+            if(self.selectedBucket()!=undefined && self.selectedKey()!=undefined){
+                console.log("BUCKET : "+self.selectedBucket()+" Key : "+self.selectedKey());
+                self.content('');
+                var url='http://localhost/riak-python-bootstrap-client/rest-proxy.php?csurl=http://192.168.1.2:8998/buckets/'+self.selectedBucket()+'/keys/'+self.selectedKey();
+                console.log("URL : "+url);
+                $.ajax({
+                    type: "GET",
+                    url:url,
+                    dataType:"json",
+                    success: function(result) {
+                        console.log("SUCCESS! DATA : "+JSON.stringify(result));
+                        self.content(JSON.stringify(result));
+                    },
+                    error: function(e) {
+                        console.log("ERROR : "+e);
+                    }});
+            }
+
+        });
+
+        $.ajax({
+            type: "GET",
+            url: 'http://localhost/riak-python-bootstrap-client/rest-proxy.php?csurl=http://192.168.1.2:8998/buckets?buckets=true',
+            dataType:"json",
+            success: function(result) {
+                console.log("SUCCESS! DATA : "+result.buckets);
+                self.buckets(result.buckets);
+            },
+            error: function(e) {
+                console.log("ERROR : "+e);
+            }});
     };
 
-    /*
-     $.ajax({
-     url:'http://192.168.1.2:8998/buckets?buckets=true',
-     type:'GET',
-     dataType:'json'
-     });
-     function jsonpcallback(rtndata){
-     console.log("DATA:"+data);
-     };
-     */
-
-    $.ajax({
-        type: "GET",
-        url: 'http://192.168.1.2:8998/buckets?buckets=true',
-        dataType:"json",
-        success: function(result) {
-            console.log("SUCCESS");
-            console.log(result);
-        },
-        error: function(result) {
-            console.log("ERROR");
-            console.log(result);
-        }});
-
-    ko.applyBindings(viewModel);
+    ko.applyBindings(new viewModel);
 });
