@@ -11,15 +11,29 @@ $(document).ready(function(){
         keys:ko.observableArray(['France', 'Germany', 'Spain','Sri lanka','America'])
     };
 
+    /*
+     $.ajax({
+     url:'http://192.168.1.2:8998/buckets?buckets=true',
+     type:'GET',
+     dataType:'json'
+     });
+     function jsonpcallback(rtndata){
+     console.log("DATA:"+data);
+     };
+     */
+
     $.ajax({
-        url:'http://192.168.1.2:8998/buckets?buckets=true',
-        type:'GET',
-        dataType:'jsonp',
-        jsonpCallback:'jsonpcallback'
-    });
-    function jsonpcallback(rtndata){
-        console.log("DATA:"+data);
-    };
+        type: "GET",
+        url: 'http://192.168.1.2:8998/buckets?buckets=true',
+        dataType:"json",
+        success: function(result) {
+            console.log("SUCCESS");
+            console.log(result);
+        },
+        error: function(result) {
+            console.log("ERROR");
+            console.log(result);
+        }});
 
     ko.applyBindings(viewModel);
 });
