@@ -8,13 +8,13 @@
  * SHOUTOUT REST PROXY
  */
 
-if(isset($_GET['csurl'])){
+if($_SERVER['REQUEST_METHOD']=="GET"){
 
     //HANDLING GET MESSAGES
 
     //set GET variables
     $url = $_GET['csurl'];
-    unset($_get['csurl']);
+    unset($_GET['csurl']);
 
     //open connection
     $ch = curl_init();
@@ -27,29 +27,52 @@ if(isset($_GET['csurl'])){
     curl_close($ch);
 
 
-}elseif(isset($_POST['csurl'])){
+}elseif($_SERVER['REQUEST_METHOD']=="POST"){
 
     //HANDLING POST MESSAGES
 
     //set POST variables
     $url = $_POST['csurl'];
     unset($_POST['csurl']);
+
+    //$url='http://192.168.1.2:8998/riak/test';
+    $headers = apache_request_headers();
+    $url=$headers['X_CSURL_HEADER'];
     //JSON object
-    $content=$_POST['content'];
+    //$content=$_POST['content'];
+    $content=file_get_contents('php://input');
     //open connection
     $ch = curl_init();
     //set the url, number of POST vars, POST data
     curl_setopt($ch,CURLOPT_URL,$url);
-    curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
-    curl_setopt($ch,CURLOPT_CUSTOMREQUEST,"PUT");
-    curl_setopt($ch,CURLOPT_POSTFIELDS,http_build_query($content));
-    curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: text/plain'));
+    curl_setopt($ch,CURLOPT_RETURNTRANSFER,1);
+    curl_setopt($ch,CURLOPT_POST,1);
+    curl_setopt($ch,CURLOPT_POSTFIELDS,$content);
+    curl_setopt($ch,CURLOPT_HTTPHEADER, array('Content-Type: text/plain'));
     //execute post
     $result = curl_exec($ch);
     //close connection
     curl_close($ch);
+}elseif($_SERVER['REQUEST_METHOD']=="PUT"){
+    //HANDLING PUT MESSAGES
+    $content=file_get_contents("php://input");
+    //set POST variables
+    $headers = apache_request_headers();
+    $url=$headers['X_CSURL_HEADER'];
+    //JSON object
+    //open connection
+    $ch = curl_init();
+    //set the url, number of POST vars, POST data
+    curl_setopt($ch,CURLOPT_URL,$url);
+    curl_setopt($ch,CURLOPT_CUSTOMREQUEST,'PUT');
+    curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
+    curl_setopt($ch,CURLOPT_HTTPHEADER, array('Content-Length: '.strlen($content)));
+    curl_setopt($ch,CURLOPT_POSTFIELDS,$content);
 
-    echo $result;
+    //execute post
+    $result = curl_exec($ch);
+    //close connection
+    curl_close($ch);
 }
 
 ?>

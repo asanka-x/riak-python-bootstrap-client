@@ -65,22 +65,21 @@ $(document).ready(function(){
         };
 
         this.storeClicked=function(){
-            if(self.newBucket('')!=undefined && self.newKey('')!=undefined && self.newContent('')!=undefined){
-                var url='http://localhost/riak-python-bootstrap-client/rest-proxy.php';
-                var csurl='http://192.168.1.2:8998/riak/'+self.newBucket()+'/'+self.newKey();
+            var url='http://localhost/riak-python-bootstrap-client/rest-proxy.php';
+            if(self.newBucket()!=undefined && self.newKey().length==0 && self.newContent()!=undefined){
+                console.log('RANDOM KEY STORE');
+                var csurl='http://192.168.1.2:8998/riak/'+self.newBucket();
                 $.ajax({
                     type: "POST",
                     url:url,
-                    contentType:"application/json",
+                    contentType:"text/plain",
                     dataType:"text",
-                    data:{
-                        "csurl":csurl,
-                        "content":self.content()
-                    },
+                    data:self.newContent(),
+                    beforeSend: function(xhr){xhr.setRequestHeader('X_CSURL_HEADER',csurl);},
                     statusCode:{
-                      404:function(){
-                          alert('Page Not Found!');
-                      }
+                        404:function(){
+                            alert('Page Not Found!');
+                        }
                     },
                     success: function(result) {
                         console.log("SUCCESS! DATA : "+result);
@@ -89,7 +88,33 @@ $(document).ready(function(){
                     error: function(e) {
                         console.log("ERROR : "+e);
                     }});
+            }else{
+                if(self.newBucket()!=undefined && self.newKey()!=undefined && self.newContent()!=undefined){
+                    var csurl='http://192.168.1.2:8998/riak/'+self.newBucket()+'/'+self.newKey();
+                    $.ajax({
+                        type: "PUT",
+                        url:url,
+                        contentType:"text/plain",
+                        dataType:"text",
+                        data:self.newContent(),
+                        beforeSend: function(xhr){xhr.setRequestHeader('X_CSURL_HEADER',csurl);},
+                        statusCode:{
+                            404:function(){
+                                alert('Page Not Found!');
+                            }
+                        },
+                        success: function(result) {
+                            console.log("SUCCESS! DATA : "+result);
+                            self.content(result);
+                        },
+                        error: function(e) {
+                            console.log("ERROR : "+e);
+                        }});
+                }else{
+
+                }
             }
+
         };
 
         $.ajax({
