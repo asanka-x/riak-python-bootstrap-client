@@ -114,7 +114,7 @@ $(document).ready(function(){
 
                 }
             }
-
+            this.getBucketList();
         };
 
         this.deleteClicked=function(){
@@ -135,11 +135,12 @@ $(document).ready(function(){
                         }
                     },
                     success: function(result) {
-                        console.log("SUCCESS! DATA : "+result);
+                        console.log("DELETE SUCCESS!");
                         self.content(result);
+                        this.getBucketList();
                     },
                     error: function(e) {
-                        console.log("ERROR : "+e);
+                        console.log("DELETE ERROR : "+e);
                     }});
             }else{
                 //Delete complete bucket
@@ -170,18 +171,21 @@ $(document).ready(function(){
             }
 
         };
+        this.getBucketList=function(){
+            $.ajax({
+                type: "GET",
+                url: 'http://localhost/riak-python-bootstrap-client/rest-proxy.php?csurl=http://192.168.1.2:8998/buckets?buckets=true',
+                dataType:"json",
+                success: function(result) {
+                    console.log("SUCCESS! DATA : "+result.buckets);
+                    self.buckets(result.buckets);
+                },
+                error: function(e) {
+                    console.log("ERROR : "+ e.toString());
+                }});
+        };
 
-        $.ajax({
-            type: "GET",
-            url: 'http://localhost/riak-python-bootstrap-client/rest-proxy.php?csurl=http://192.168.1.2:8998/buckets?buckets=true',
-            dataType:"json",
-            success: function(result) {
-                console.log("SUCCESS! DATA : "+result.buckets);
-                self.buckets(result.buckets);
-            },
-            error: function(e) {
-                console.log("ERROR : "+ e.toString());
-            }});
+        this.getBucketList();
     };
 
     ko.applyBindings(new viewModel);
