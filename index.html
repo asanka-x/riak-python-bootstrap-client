@@ -31,11 +31,11 @@
     <div class="span3">
         <div class="well">
             <h3>Store</h3>
-            <input type="text" placeholder="Enter Bucket Name Here..."><br>
-            <input type="text" placeholder="Enter key Here..."><br>
-            <textarea rows="4" placeholder="Enter Content Here..."></textarea><br>
-            <button type="submit" class="btn btn-primary"><i class="icon-hdd icon-white"></i> Store</button>
-            <button type="button" class="btn">Clear</button>
+            <input type="text" data-bind="value:newBucket" placeholder="Enter Bucket Name Here..."><br>
+            <input type="text" data-bind="value:newKey" placeholder="Enter key Here..."><br>
+            <textarea rows="4" data-bind="value:newContent" placeholder="Enter Content Here..."></textarea><br>
+            <button type="submit" class="btn btn-primary" data-bind="click:storeClicked"><i class="icon-hdd icon-white"></i> Store</button>
+            <button type="button" class="btn" data-bind="click:clearClicked">Clear</button>
         </div>
     </div>
     <div class="span10">

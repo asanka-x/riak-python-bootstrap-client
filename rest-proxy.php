@@ -35,16 +35,15 @@ if(isset($_GET['csurl'])){
     $url = $_POST['csurl'];
     unset($_POST['csurl']);
     //JSON object
-    $fields_array= array(
-
-    );
+    $content=$_POST['content'];
     //open connection
     $ch = curl_init();
     //set the url, number of POST vars, POST data
     curl_setopt($ch,CURLOPT_URL,$url);
-    curl_setopt($ch,CURLOPT_POST,3);
-    curl_setopt($ch,CURLOPT_POSTFIELDS,json_encode($fields_array));
-    curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
+    curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
+    curl_setopt($ch,CURLOPT_CUSTOMREQUEST,"PUT");
+    curl_setopt($ch,CURLOPT_POSTFIELDS,http_build_query($content));
+    curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: text/plain'));
     //execute post
     $result = curl_exec($ch);
     //close connection

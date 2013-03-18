@@ -15,6 +15,9 @@ $(document).ready(function(){
         this.selectedBucket=ko.observable();
         this.selectedKey=ko.observable("");
         this.content=ko.observable("");
+        this.newBucket=ko.observable("");
+        this.newKey=ko.observable("");
+        this.newContent=ko.observable("");
 
         this.bucketClicked=ko.computed(function(){
             if(self.selectedBucket()!=undefined){
@@ -42,10 +45,11 @@ $(document).ready(function(){
                 $.ajax({
                     type: "GET",
                     url:url,
-                    dataType:"json",
+                    contentType:"text/plain",
+                    dataType:"text",
                     success: function(result) {
-                        console.log("SUCCESS! DATA : "+JSON.stringify(result));
-                        self.content(JSON.stringify(result));
+                        console.log("SUCCESS! DATA : "+result);
+                        self.content(result);
                     },
                     error: function(e) {
                         console.log("ERROR : "+e);
@@ -53,6 +57,40 @@ $(document).ready(function(){
             }
 
         });
+
+        this.clearClicked=function(){
+            self.newBucket('');
+            self.newKey('');
+            self.newContent('');
+        };
+
+        this.storeClicked=function(){
+            if(self.newBucket('')!=undefined && self.newKey('')!=undefined && self.newContent('')!=undefined){
+                var url='http://localhost/riak-python-bootstrap-client/rest-proxy.php';
+                var csurl='http://192.168.1.2:8998/riak/'+self.newBucket()+'/'+self.newKey();
+                $.ajax({
+                    type: "POST",
+                    url:url,
+                    contentType:"application/json",
+                    dataType:"text",
+                    data:{
+                        "csurl":csurl,
+                        "content":self.content()
+                    },
+                    statusCode:{
+                      404:function(){
+                          alert('Page Not Found!');
+                      }
+                    },
+                    success: function(result) {
+                        console.log("SUCCESS! DATA : "+result);
+                        self.content(result);
+                    },
+                    error: function(e) {
+                        console.log("ERROR : "+e);
+                    }});
+            }
+        };
 
         $.ajax({
             type: "GET",
@@ -63,7 +101,7 @@ $(document).ready(function(){
                 self.buckets(result.buckets);
             },
             error: function(e) {
-                console.log("ERROR : "+e);
+                console.log("ERROR : "+ e.toString());
             }});
     };
 
