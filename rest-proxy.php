@@ -73,6 +73,26 @@ if($_SERVER['REQUEST_METHOD']=="GET"){
     $result = curl_exec($ch);
     //close connection
     curl_close($ch);
+}elseif($_SERVER['REQUEST_METHOD']=="DELETE"){
+    //HANDLING PUT MESSAGES
+    //$content=file_get_contents("php://input");
+    //set POST variables
+    $headers = apache_request_headers();
+    $url=$headers['X_CSURL_HEADER'];
+    //JSON object
+    //open connection
+    $ch = curl_init();
+    //set the url, number of POST vars, POST data
+    curl_setopt($ch,CURLOPT_URL,$url);
+    curl_setopt($ch,CURLOPT_CUSTOMREQUEST,'DELETE');
+    //curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
+    //curl_setopt($ch,CURLOPT_HTTPHEADER, array('Content-Length: '.strlen($content)));
+    //curl_setopt($ch,CURLOPT_POSTFIELDS,$content);
+
+    //execute post
+    $result = curl_exec($ch);
+    //close connection
+    curl_close($ch);
 }
 
 ?>

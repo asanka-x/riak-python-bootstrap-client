@@ -117,6 +117,60 @@ $(document).ready(function(){
 
         };
 
+        this.deleteClicked=function(){
+            var url='http://localhost/riak-python-bootstrap-client/rest-proxy.php';
+            if(self.selectedBucket()!=undefined && self.selectedKey()!=undefined){
+                console.log("BUCKET : "+self.selectedBucket()+" DELETE Key : "+self.selectedKey());
+                var csurl='http://192.168.1.2:8998/riak/'+self.selectedBucket()+'/'+self.selectedKey();
+                console.log("DELETE URL : "+csurl);
+                $.ajax({
+                    type: "DELETE",
+                    url:url,
+                    contentType:"text/plain",
+                    dataType:"text",
+                    beforeSend: function(xhr){xhr.setRequestHeader('X_CSURL_HEADER',csurl);},
+                    statusCode:{
+                        404:function(){
+                            alert('Page Not Found!');
+                        }
+                    },
+                    success: function(result) {
+                        console.log("SUCCESS! DATA : "+result);
+                        self.content(result);
+                    },
+                    error: function(e) {
+                        console.log("ERROR : "+e);
+                    }});
+            }else{
+                //Delete complete bucket
+
+                /*if(self.selectedBucket()!=undefined && self.selectedKey()==undefined){
+                    console.log("BUCKET : "+self.selectedBucket()+" DELETE Key : "+self.selectedKey());
+                    var csurl='http://192.168.1.2:8998/riak/'+self.selectedBucket();
+                    console.log("DELETE URL : "+csurl);
+                    $.ajax({
+                        type: "DELETE",
+                        url:url,
+                        contentType:"text/plain",
+                        dataType:"text",
+                        beforeSend: function(xhr){xhr.setRequestHeader('X_CSURL_HEADER',csurl);},
+                        statusCode:{
+                            404:function(){
+                                alert('Page Not Found!');
+                            }
+                        },
+                        success: function(result) {
+                            console.log("SUCCESS! DATA : "+result);
+                            self.content(result);
+                        },
+                        error: function(e) {
+                            console.log("ERROR : "+e);
+                        }});
+                }*/
+            }
+
+        };
+
         $.ajax({
             type: "GET",
             url: 'http://localhost/riak-python-bootstrap-client/rest-proxy.php?csurl=http://192.168.1.2:8998/buckets?buckets=true',
