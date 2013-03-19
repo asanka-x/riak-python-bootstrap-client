@@ -21,47 +21,47 @@
 <script src="js/knockout.js"></script>
 <script src="js/riak-connector.js"></script>
 
-<div class="hero-unit">
+<div class="well">
     <h1>Riak Client - DEMO</h1>
     <p>This is a client to use the Riak Distributed Storage</p>
 </div>
 
 
-<div class="row">
-    <div class="span3">
-        <div class="well">
-            <h3>Store</h3>
-            <input type="text" data-bind="value:newBucket" placeholder="Enter Bucket Name Here..."><br>
-            <input type="text" data-bind="value:newKey" placeholder="Enter key Here..."><br>
-            <textarea rows="4" data-bind="value:newContent" placeholder="Enter Content Here..."></textarea><br>
-            <button type="submit" class="btn btn-primary" data-bind="click:storeClicked"><i class="icon-hdd icon-white"></i> Store</button>
-            <button type="button" class="btn" data-bind="click:clearClicked">Clear</button>
-        </div>
+<div class="row-fluid">
+
+    <div class="well span4">
+        <h3>Store</h3>
+        <input type="text" data-bind="value:newBucket" placeholder="Enter Bucket Name Here..."><br>
+        <input type="text" data-bind="value:newKey" placeholder="Enter key Here..."><br>
+        <textarea rows="4" data-bind="value:newContent" placeholder="Enter Content Here..."></textarea><br>
+        <button type="submit" class="btn btn-primary" data-bind="click:storeClicked"><i class="icon-hdd icon-white"></i> Store</button>
+        <button type="button" class="btn" data-bind="click:clearClicked">Clear</button>
     </div>
-    <div class="span10">
-        <div class="well">
-            <h3>Retrieve</h3>
-            <div class="row">
-                <div class="span3">
-                    <label>Buckets</label>
-                    <select multiple="false" data-bind="options:buckets,value:selectedBucket" style="height: 200px;">
 
-                    </select>
-                </div>
-                <div class="span3">
-                    <label>Bucket <strong data-bind="text:selectedBucket"></strong> Keys</label>
-                    <select multiple="false" data-bind="options:keys,value:selectedKey" style="height: 200px;">
+    <div class="well span8">
+        <h3>Retrieve</h3>
+        <div class="row-fluid">
+            <div class="span6">
+                <label>Buckets</label>
+                <select multiple="false" data-bind="options:buckets,value:selectedBucket" style="height: 170px;">
 
-                    </select>
-                </div>
-                <div class="span3">
-                    <label>Key <strong data-bind="text:selectedKey"></strong> Content</label>
-                    <textarea rows="9" data-bind="value:content"></textarea>
-                </div>
+                </select>
             </div>
-            <button type="submit" class="btn btn-primary"><i class="icon-edit icon-white"></i> Update</button>
-            <button type="submit" class="btn btn-primary" data-bind="click:deleteClicked"><i class="icon-trash icon-white"></i> Delete</button>
+            <div class="span6">
+                <label>Bucket <strong data-bind="text:selectedBucket"></strong> Keys</label>
+                <select multiple="false" data-bind="options:keys,value:selectedKey" style="height: 170px;">
+
+                </select>
+            </div>
         </div>
+        <div class="row-fluid">
+            <div class="span11">
+                <label>Key <strong data-bind="text:selectedKey"></strong> Content</label>
+                <textarea rows="5" data-bind="value:content" style="width: 100%"></textarea>
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary"><i class="icon-edit icon-white"></i> Update</button>
+        <button type="submit" class="btn btn-primary" data-bind="click:deleteClicked"><i class="icon-trash icon-white"></i> Delete</button>
     </div>
 
 </div>
