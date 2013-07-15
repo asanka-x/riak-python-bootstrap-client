@@ -24,7 +24,7 @@ $(document).ready(function(){
                 console.log("BUCKET "+self.selectedBucket());
                 $.ajax({
                     type: "GET",
-                    url: 'http://localhost/riak-python-bootstrap-client/rest-proxy.php?csurl=http://127.0.0.1:8998/buckets/'+self.selectedBucket()+'/keys?keys=true',
+                    url: 'http://localhost/riak-python-bootstrap-client/deprecated/rest-proxy.php?csurl=http://127.0.0.1:8998/buckets/'+self.selectedBucket()+'/keys?keys=true',
                     dataType:"json",
                     success: function(result) {
                         console.log("SUCCESS! DATA : "+result.keys);
@@ -40,7 +40,7 @@ $(document).ready(function(){
             if(self.selectedBucket()!=undefined && self.selectedKey()!=undefined){
                 console.log("BUCKET : "+self.selectedBucket()+" Key : "+self.selectedKey());
                 self.content('');
-                var url='http://localhost/riak-python-bootstrap-client/rest-proxy.php?csurl=http://127.0.0.1:8998/buckets/'+self.selectedBucket()+'/keys/'+self.selectedKey();
+                var url='http://localhost/riak-python-bootstrap-client/deprecated/rest-proxy.php?csurl=http://127.0.0.1:8998/buckets/'+self.selectedBucket()+'/keys/'+self.selectedKey();
                 console.log("URL : "+url);
                 $.ajax({
                     type: "GET",
@@ -65,7 +65,7 @@ $(document).ready(function(){
         };
 
         this.storeClicked=function(){
-            var url='http://localhost/riak-python-bootstrap-client/rest-proxy.php';
+            var url='http://localhost/riak-python-bootstrap-client/deprecated/rest-proxy.php';
             if(self.newBucket()!=undefined && self.newKey().length==0 && self.newContent()!=undefined){
                 console.log('RANDOM KEY STORE');
                 var csurl='http://127.0.0.1:8998/riak/'+self.newBucket();
@@ -118,7 +118,7 @@ $(document).ready(function(){
         };
 
         this.deleteClicked=function(){
-            var url='http://localhost/riak-python-bootstrap-client/rest-proxy.php';
+            var url='http://localhost/riak-python-bootstrap-client/deprecated/rest-proxy.php';
             if(self.selectedBucket()!=undefined && self.selectedKey()!=undefined){
                 console.log("BUCKET : "+self.selectedBucket()+" DELETE Key : "+self.selectedKey());
                 var csurl='http://127.0.0.1:8998/riak/'+self.selectedBucket()+'/'+self.selectedKey();
@@ -174,7 +174,7 @@ $(document).ready(function(){
         this.getBucketList=function(){
             $.ajax({
                 type: "GET",
-                url: 'http://localhost/riak-python-bootstrap-client/rest-proxy.php?csurl=http://127.0.0.1:8998/buckets?buckets=true',
+                url: 'http://localhost/riak-python-bootstrap-client/deprecated/rest-proxy.php?csurl=http://127.0.0.1:8998/buckets?buckets=true',
                 dataType:"json",
                 success: function(result) {
                     console.log("SUCCESS! DATA : "+result.buckets);

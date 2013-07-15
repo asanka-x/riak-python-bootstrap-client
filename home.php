@@ -74,26 +74,24 @@ confirmLogged();
 
 
                 <h3>File Store</h3>
-                <!--      <form id="form1" enctype="multipart/form-data" method="post" action="Upload.aspx">-->
-                <input type="file" name="fileToUpload" id="fileToUpload" onchange="fileSelected();"/>
-                <div>
-                    Name : <span id="fileName"></span>
-                </div>
+
+                <input type="file" id="files" name="files[]" multiple />
+
                 <div>
                     Size : <span id="fileSize"></span>
                 </div>
                 <div>
                     Type : <span id="fileType"></span>
                 </div>
-                <div>
-                    Binary : <span id="fileBinary"></span>
-                </div>
-                <input type="button" onclick="uploadFile()" value="Upload" />
-                <div id="progressNumber"></div>
-                <!--     </form>-->
+                <br>
+                <button type="submit" class="btn btn-primary" data-bind=""><i class="icon-hdd icon-white"></i> Upload</button>
+                <button type="button" class="btn" data-bind="">Clear</button>
+                <output id="list"></output>
+
+
             </div>
 
-            <div class="well span11">
+            <div class="well span10">
                 <div class="row-fluid">
                     <div class="span11" data-bind="visible:showBuckets">
                         <!-- ko foreach: buckets -->

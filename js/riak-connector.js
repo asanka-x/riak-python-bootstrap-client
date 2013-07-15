@@ -29,18 +29,18 @@ var viewModel = function(){
         self.showContent(false);
         console.log("BUCKET "+data);
         self.selectedBucket(data);
-/*        $.ajax({
-                type: "GET",
-                url: proxyUrl+'?csurl=http://127.0.0.1:8998/buckets/'+data+'/keys?keys=true',
-                dataType:"json",
-                success: function(result) {
-                    console.log("SUCCESS! DATA : "+result.keys);
-                    self.keys(result.keys);
-                },
-                error: function(e) {
-                    console.log("ERROR : "+ e);
-                }}
-        );*/
+        /*        $.ajax({
+         type: "GET",
+         url: proxyUrl+'?csurl=http://127.0.0.1:8998/buckets/'+data+'/keys?keys=true',
+         dataType:"json",
+         success: function(result) {
+         console.log("SUCCESS! DATA : "+result.keys);
+         self.keys(result.keys);
+         },
+         error: function(e) {
+         console.log("ERROR : "+ e);
+         }}
+         );*/
 
         $.ajax({
                 type: "GET",
@@ -213,18 +213,18 @@ var viewModel = function(){
         self.showBuckets(true);
         self.showKeys(false);
         self.showContent(false);
-/*        $.ajax({
-            type: 'GET',
-            url: proxyUrl+'?csurl=http://127.0.0.1:8998/buckets?buckets=true',
-            dataType:'json',
-            success: function(result) {
-                console.log("SUCCESS! DATA : "+result.buckets);
-                self.buckets(result.buckets);
-            },
-            error: function(e) {
-                console.log("ERROR : "+ e.toString());
-            }}
-        );*/
+        /*        $.ajax({
+         type: 'GET',
+         url: proxyUrl+'?csurl=http://127.0.0.1:8998/buckets?buckets=true',
+         dataType:'json',
+         success: function(result) {
+         console.log("SUCCESS! DATA : "+result.buckets);
+         self.buckets(result.buckets);
+         },
+         error: function(e) {
+         console.log("ERROR : "+ e.toString());
+         }}
+         );*/
 
         $.ajax({
                 type: "GET",
@@ -241,13 +241,52 @@ var viewModel = function(){
     };
 };
 
+var handleFileSelect=function(evt){
+    var file = evt.target.files[0]; // FileList object
+
+    // Loop through the FileList
+    //for (var i = 0, f; f = files[i]; i++) {
+
+    var reader = new FileReader();
+
+    // Closure to capture the file information.
+    reader.onload = (function(theFile) {
+        return function(e) {
+            // Print the contents of the file
+            var span = document.createElement('span');
+            span.innerHTML = ['<p>',e.target.result,'</p>'].join('');
+            document.getElementById('list').insertBefore(span, null);
+        };
+    })(file);
+
+    var fileSize = 0;
+    if (file.size > 1024 * 1024)
+        fileSize = (Math.round(file.size * 100 / (1024 * 1024)) / 100).toString() + 'MB';
+    else
+        fileSize = (Math.round(file.size * 100 / 1024) / 100).toString() + 'KB';
+
+    document.getElementById('fileSize').innerHTML = fileSize;
+    document.getElementById('fileType').innerHTML = file.type;
+
+    // Read in the file
+    //reader.readAsDataText(f,UTF-8);
+    //reader.readAsDataURL(f);
+    reader.readAsText(file);
+    //}
+};
+
 $(document).ready(function(){
     var vm=new viewModel();
     ko.applyBindings(vm);
 
     vm.getBucketList();
 
+    document.getElementById('files').addEventListener('change', handleFileSelect, false);
 });
+
+
+
+
 
 function fileSelected() {
     var file = document.getElementById('fileToUpload').files[0];
@@ -263,7 +302,8 @@ function fileSelected() {
         reader.onload = (function(theFile) {
             return function(e) {
                 // Render thumbnail.
-                document.getElementById('fileBinary').innerHTML=e.target.result;
+                //document.getElementById('fileBinary').innerHTML=e.target.result;
+                console.log(e.target.result);
             };
         })(file);
 
@@ -309,23 +349,24 @@ function uploadFile() {
     console.log("URL : "+csurl);
 
     $.ajax({
-        type: "PUT",
-        url:url,
-        contentType:document.getElementById('fileType').innerHTML,
-        data:document.getElementById('fileBinary').innerHTML,
-        beforeSend: function(xhr){xhr.setRequestHeader('X_CSURL_HEADER',csurl);},
-        statusCode:{
-            404:function(){
-                alert('Page Not Found!');
-            }
-        },
-        success: function(result) {
-            console.log("SUCCESS! DATA : "+result);
-            //self.content(result);
-        },
-        error: function(e) {
-            console.log("ERROR : "+e);
-        }});
+            type: "PUT",
+            url:url,
+            contentType:document.getElementById('fileType').innerHTML,
+            data:document.getElementById('fileBinary').innerHTML,
+            beforeSend: function(xhr){xhr.setRequestHeader('X_CSURL_HEADER',csurl);},
+            statusCode:{
+                404:function(){
+                    alert('Page Not Found!');
+                }
+            },
+            success: function(result) {
+                console.log("SUCCESS! DATA : "+result);
+                //self.content(result);
+            },
+            error: function(e) {
+                console.log("ERROR : "+e);
+            }}
+    );
 }
 
 

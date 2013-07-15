@@ -66,7 +66,7 @@ if(loggedIn()){//
 <div class="row-fluid well">
     <div class="span4 offset4">
         <form class="form-signin" method="post" action="check_login.php">
-            <img src="img/logo.png" class="offset2">
+            <img src="img/logo.png" class="offset1">
             <input type="text" placeholder="User Name" name="username" class="input-block-level" required="">
             <input type="password" placeholder="Password" name="password" class="input-block-level" >
             <button type="submit" class="btn btn-large btn-primary offset4">LOGIN</button>
