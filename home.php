@@ -74,7 +74,7 @@ confirmLogged();
 
 
                 <h3>File Store</h3>
-
+                <input type="text" data-bind="value:selectedBucket" placeholder="Enter Bucket Name Here..."><br>
                 <input type="file" id="files" name="files[]" multiple />
 
                 <div>
@@ -86,7 +86,7 @@ confirmLogged();
                 <br>
                 <button type="submit" class="btn btn-primary" data-bind="click:storeFileClicked"><i class="icon-hdd icon-white"></i> Upload</button>
                 <button type="button" class="btn" data-bind="">Clear</button>
-                <output id="list"></output>
+                <output hidden="true" id="list"></output>
 
 
             </div>
@@ -95,7 +95,7 @@ confirmLogged();
                 <div class="row-fluid">
                     <div class="span11" data-bind="visible:showBuckets">
                         <!-- ko foreach: buckets -->
-                        <div class="span1" data-bind="click:$parent.bucketClicked">
+                        <div class="span2" data-bind="click:$parent.bucketClicked">
                             <i class="icon-folder-close icon-3x"></i><br><span data-bind="text: $data"></span>
                         </div>
                         <!-- /ko -->
@@ -112,7 +112,7 @@ confirmLogged();
                 <div class="row-fluid" data-bind="visible:showContent">
                     <div class="span11">
                         <label>Key <strong data-bind="text:selectedKey"></strong> Content</label>
-                        <textarea rows="20" data-bind="value:content" style="width: 100%"></textarea>
+                        <textarea rows="22" data-bind="value:content" style="width: 100%"></textarea>
                     </div>
                     <button type="submit" class="btn btn-primary"><i class="icon-edit icon-white"></i> Update</button>
                     <button type="submit" class="btn btn-primary" data-bind="click:deleteClicked"><i class="icon-trash icon-white"></i> Delete</button>
