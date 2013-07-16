@@ -59,7 +59,8 @@ if($_SERVER['REQUEST_METHOD']=="GET"){
     //set POST variables
     $headers = apache_request_headers();
     $url=$headers['X_CSURL_HEADER'];
-    $cType=$headers['Content-Type'];
+    $cType=$headers['X_ContentType'];
+
     //JSON object
     //open connection
     $ch = curl_init();
@@ -72,6 +73,9 @@ if($_SERVER['REQUEST_METHOD']=="GET"){
 
     //execute post
     $result = curl_exec($ch);
+    $response = curl_getinfo( $ch );
+
+    //echo "checking ".$content." ".$url." ".$cType." Result ".$result." Response ".json_encode($response);
     //close connection
     curl_close($ch);
 }elseif($_SERVER['REQUEST_METHOD']=="DELETE"){

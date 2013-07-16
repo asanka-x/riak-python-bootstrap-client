@@ -78,13 +78,13 @@ confirmLogged();
                 <input type="file" id="files" name="files[]" multiple />
 
                 <div>
-                    Size : <span id="fileSize"></span>
+                    Size : <span data-bind="text:fSize" id="fileSize"></span>
                 </div>
                 <div>
-                    Type : <span id="fileType"></span>
+                    Type : <span data-bind="text:fType" id="fileType"></span>
                 </div>
                 <br>
-                <button type="submit" class="btn btn-primary" data-bind=""><i class="icon-hdd icon-white"></i> Upload</button>
+                <button type="submit" class="btn btn-primary" data-bind="click:storeFileClicked"><i class="icon-hdd icon-white"></i> Upload</button>
                 <button type="button" class="btn" data-bind="">Clear</button>
                 <output id="list"></output>
 
@@ -112,7 +112,7 @@ confirmLogged();
                 <div class="row-fluid" data-bind="visible:showContent">
                     <div class="span11">
                         <label>Key <strong data-bind="text:selectedKey"></strong> Content</label>
-                        <textarea rows="5" data-bind="value:content" style="width: 100%"></textarea>
+                        <textarea rows="20" data-bind="value:content" style="width: 100%"></textarea>
                     </div>
                     <button type="submit" class="btn btn-primary"><i class="icon-edit icon-white"></i> Update</button>
                     <button type="submit" class="btn btn-primary" data-bind="click:deleteClicked"><i class="icon-trash icon-white"></i> Delete</button>

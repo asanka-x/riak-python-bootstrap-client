@@ -19,9 +19,10 @@ $dbConnect=new DBConnect();
 $method=$_GET['method'];
 
 if(strcmp($method,"addUserBucketKeyMapping")==0){
-    $status=$dbConnect->addUserBucketKeyMapping($_SESSION['username'],$_GET['bucket'],$_GET['key']);
-    if($status)
-        echo 'User Bucket-Key Mapping Added';
+    $status1=$dbConnect->addUserBucketKeyMapping($_SESSION['username'],$_GET['bucket'],$_GET['key']);
+    $status2=$dbConnect->updateUserUsage($_SESSION['username'],$_GET['size']);
+    if($status1 && $status2)
+        echo 'User Bucket-Key Mapping Added'.$_GET['size'];
     else
         echo 'User Bucket-Key Mapping Error';
 }

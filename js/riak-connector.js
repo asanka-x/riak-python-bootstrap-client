@@ -10,9 +10,9 @@ var viewModel = function(){
     var serviceUrl="http://localhost/riak-python-bootstrap-client/AjaxAccess.php";
     var proxyUrl="http://localhost/riak-python-bootstrap-client/rest-proxy.php";
 
-    this.buckets = ko.observableArray(); // These are the initial options
-    this.keys=ko.observableArray();
-    this.selectedBucket=ko.observable();
+    this.buckets = ko.observableArray([]); // These are the initial options
+    this.keys=ko.observableArray([]);
+    this.selectedBucket=ko.observable("");
     this.selectedKey=ko.observable("");
     this.content=ko.observable("");
     this.newBucket=ko.observable("");
@@ -21,6 +21,11 @@ var viewModel = function(){
     this.showBuckets=ko.observable(true);
     this.showKeys=ko.observable(false);
     this.showContent=ko.observable(false);
+
+    this.fContent=ko.observable("");
+    this.fType=ko.observable("");
+    this.fSize=ko.observable("");
+    this.fName=ko.observable("");
 
     this.bucketClicked=function(data){
 
@@ -121,7 +126,10 @@ var viewModel = function(){
                     contentType:"text/plain",
                     dataType:"text",
                     data:self.newContent(),
-                    beforeSend: function(xhr){xhr.setRequestHeader('X_CSURL_HEADER',csurl);},
+                    beforeSend: function(xhr){
+                        xhr.setRequestHeader('X_CSURL_HEADER',csurl);
+                        xhr.setRequestHeader('X_ContentType','text/plain');
+                    },
                     statusCode:{
                         404:function(){
                             alert('Page Not Found!');
@@ -139,7 +147,7 @@ var viewModel = function(){
                 //Add User-Bucket-Key Mapping
                 $.ajax({
                     type:'GET',
-                    url:serviceUrl+'?method=addUserBucketKeyMapping&username=asanka&bucket='+self.newBucket()+'&key='+self.newKey(),
+                    url:serviceUrl+'?method=addUserBucketKeyMapping&bucket='+self.newBucket()+'&key='+self.newKey(),
                     contentType:'application/json',
                     success:function(data){
                         console.log("Store Mapping :"+data);
@@ -239,41 +247,122 @@ var viewModel = function(){
                 }}
         );
     };
+
+    this.handleFileSelect=function(evt){
+        var file = evt.target.files[0]; // FileList object
+
+        // Loop through the FileList
+        //for (var i = 0, f; f = files[i]; i++) {
+
+        var reader = new FileReader();
+
+        // Closure to capture the file information.
+        reader.onload = (function(theFile) {
+            return function(e) {
+                // Print the contents of the file
+                var span = document.createElement('span');
+                span.innerHTML = ['<p>',e.target.result,'</p>'].join('');
+                self.fContent(e.target.result);
+                document.getElementById('list').insertBefore(span, null);
+            };
+        })(file);
+
+        var fileSize = 0;
+        /*        if (file.size > 1024 * 1024)
+         fileSize = (Math.round(file.size * 100 / (1024 * 1024)) / 100).toString() + 'MB';
+         else*/
+        fileSize = (Math.round(file.size * 100 / 1024) / 100);
+
+        self.fSize(fileSize);
+        self.fType(file.type);
+        self.fName(file.name);
+
+        // Read in the file
+        //reader.readAsDataText(f,UTF-8);
+        //reader.readAsDataURL(f);
+        reader.readAsText(file);
+        //}
+    };
+
+
+    this.storeFileClicked=function(){
+        console.log(self.fName()+" "+self.fType()+" "+self.fSize()+" "+self.fContent())
+
+
+        var csurl='http://127.0.0.1:8998/riak/'+self.selectedBucket()+'/'+self.fName();
+        $.ajax({
+            type: "PUT",
+            url:proxyUrl,
+            contentType:"text/plain",
+            dataType:"text",
+            data:self.fContent(),
+            beforeSend: function(xhr){
+                xhr.setRequestHeader('X_CSURL_HEADER',csurl);
+                xhr.setRequestHeader('X_ContentType',self.fType());
+            },
+            statusCode:{
+                404:function(){
+                    alert('Page Not Found!');
+                }
+            },
+            success: function(result) {
+                console.log("SUCCESS! File Stored : "+result);
+                self.content(result);
+            },
+            error: function(e) {
+                console.log("ERROR! File Stored : "+e);
+            }});
+
+
+        //Add User-Bucket-Key Mapping
+        $.ajax({
+            type:'GET',
+            url:serviceUrl+'?method=addUserBucketKeyMapping&bucket='+self.selectedBucket()+'&key='+self.fName()+'&size='+self.fSize(),
+            contentType:'application/json',
+            success:function(data){
+                console.log("Store Mapping :"+data);
+
+            },
+            error:function(e){
+                console.log("Store Mapping :"+e.message);
+            }
+        });
+    };
 };
 
-var handleFileSelect=function(evt){
-    var file = evt.target.files[0]; // FileList object
+/*var handleFileSelect=function(evt){
+ var file = evt.target.files[0]; // FileList object
 
-    // Loop through the FileList
-    //for (var i = 0, f; f = files[i]; i++) {
+ // Loop through the FileList
+ //for (var i = 0, f; f = files[i]; i++) {
 
-    var reader = new FileReader();
+ var reader = new FileReader();
 
-    // Closure to capture the file information.
-    reader.onload = (function(theFile) {
-        return function(e) {
-            // Print the contents of the file
-            var span = document.createElement('span');
-            span.innerHTML = ['<p>',e.target.result,'</p>'].join('');
-            document.getElementById('list').insertBefore(span, null);
-        };
-    })(file);
+ // Closure to capture the file information.
+ reader.onload = (function(theFile) {
+ return function(e) {
+ // Print the contents of the file
+ var span = document.createElement('span');
+ span.innerHTML = ['<p>',e.target.result,'</p>'].join('');
+ document.getElementById('list').insertBefore(span, null);
+ };
+ })(file);
 
-    var fileSize = 0;
-    if (file.size > 1024 * 1024)
-        fileSize = (Math.round(file.size * 100 / (1024 * 1024)) / 100).toString() + 'MB';
-    else
-        fileSize = (Math.round(file.size * 100 / 1024) / 100).toString() + 'KB';
+ var fileSize = 0;
+ if (file.size > 1024 * 1024)
+ fileSize = (Math.round(file.size * 100 / (1024 * 1024)) / 100).toString() + 'MB';
+ else
+ fileSize = (Math.round(file.size * 100 / 1024) / 100).toString() + 'KB';
 
-    document.getElementById('fileSize').innerHTML = fileSize;
-    document.getElementById('fileType').innerHTML = file.type;
+ document.getElementById('fileSize').innerHTML = fileSize;
+ document.getElementById('fileType').innerHTML = file.type;
 
-    // Read in the file
-    //reader.readAsDataText(f,UTF-8);
-    //reader.readAsDataURL(f);
-    reader.readAsText(file);
-    //}
-};
+ // Read in the file
+ //reader.readAsDataText(f,UTF-8);
+ //reader.readAsDataURL(f);
+ reader.readAsText(file);
+ //}
+ };*/
 
 $(document).ready(function(){
     var vm=new viewModel();
@@ -281,92 +370,6 @@ $(document).ready(function(){
 
     vm.getBucketList();
 
-    document.getElementById('files').addEventListener('change', handleFileSelect, false);
+    document.getElementById('files').addEventListener('change', vm.handleFileSelect, false);
 });
-
-
-
-
-
-function fileSelected() {
-    var file = document.getElementById('fileToUpload').files[0];
-    var reader=new FileReader();
-    if (file) {
-        var fileSize = 0;
-        if (file.size > 1024 * 1024)
-            fileSize = (Math.round(file.size * 100 / (1024 * 1024)) / 100).toString() + 'MB';
-        else
-            fileSize = (Math.round(file.size * 100 / 1024) / 100).toString() + 'KB';
-
-        // Closure to capture the file information.
-        reader.onload = (function(theFile) {
-            return function(e) {
-                // Render thumbnail.
-                //document.getElementById('fileBinary').innerHTML=e.target.result;
-                console.log(e.target.result);
-            };
-        })(file);
-
-        // Read in the image file as a data URL.
-        reader.readAsBinaryString(file);
-        //reader.readAsDataURL(file);
-
-        document.getElementById('fileName').innerHTML = file.name;
-        document.getElementById('fileSize').innerHTML = fileSize;
-        document.getElementById('fileType').innerHTML = file.type;
-
-    }
-}
-
-function uploadProgress(evt) {
-    if (evt.lengthComputable) {
-        var percentComplete = Math.round(evt.loaded * 100 / evt.total);
-        document.getElementById('progressNumber').innerHTML = percentComplete.toString() + '%';
-    }
-    else {
-        document.getElementById('progressNumber').innerHTML = 'unable to compute';
-    }
-}
-
-function uploadComplete(evt) {
-    /* This event is raised when the server send back a response */
-    alert(evt.target.responseText);
-}
-
-function uploadFailed(evt) {
-    alert("There was an error attempting to upload the file.");
-}
-
-function uploadCanceled(evt) {
-    alert("The upload has been canceled by the user or the browser dropped the connection.");
-}
-
-function uploadFile() {
-    var csurl='http://127.0.0.1:8998/riak/images/'+document.getElementById('fileName').innerHTML;
-    var url='http://localhost/riak-python-bootstrap-client/rest-proxy.php';
-
-
-    console.log("URL : "+csurl);
-
-    $.ajax({
-            type: "PUT",
-            url:url,
-            contentType:document.getElementById('fileType').innerHTML,
-            data:document.getElementById('fileBinary').innerHTML,
-            beforeSend: function(xhr){xhr.setRequestHeader('X_CSURL_HEADER',csurl);},
-            statusCode:{
-                404:function(){
-                    alert('Page Not Found!');
-                }
-            },
-            success: function(result) {
-                console.log("SUCCESS! DATA : "+result);
-                //self.content(result);
-            },
-            error: function(e) {
-                console.log("ERROR : "+e);
-            }}
-    );
-}
-
 

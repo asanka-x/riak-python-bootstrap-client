@@ -56,6 +56,17 @@ class DBConnect{
         }
     }
 
+    public function updateUserUsage($username,$size){
+        $query="UPDATE `users` SET used=used+".floatval($size)." WHERE username='".$username."'";
+        if(!mysql_query($query,$this->con)){
+            return FALSE;
+        }else{
+            return TRUE;
+        }
+    }
+
+
+
     public function removeUserBucketKeyMapping($username,$bucket,$key){
         $query="DELETE FROM `user_key_mappings` WHERE username='".$username."' AND bucket_name='".$bucket."' AND bucket_key='".$key."'";
         if(!mysql_query($query,$this->con)){
