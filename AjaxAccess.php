@@ -35,7 +35,12 @@ else{
             $keyList=$dbConnect->getUserBucketKeys($_SESSION['username'],$_GET['bucket']);
             echo json_encode($keyList);
         }else{
+            if(strcmp($method,"getUserUsage")==0){
+                $usage=$dbConnect->getUserUsage($_SESSION['username']);
+                echo json_encode($usage);
+            }else{
 
+            }
         }
     }
 }

@@ -41,9 +41,12 @@ confirmLogged();
                                         <li><a href="#about">About</a></li>
                                         <li><a href="#contact">Contact</a></li>-->
                 </ul>
+
             </div>
+
             <form method="post" action="logout.php">
                 <p class="navbar-text pull-right">
+                    <span class="text-success" data-bind="text:userUsage"></span>&nbsp;&nbsp;&nbsp;
                     Logged in as <a href="#" class="navbar-link"><?php echo $_SESSION['username'];?></a>&nbsp;
                     <button type="submit" class="btn btn-small" id="logout"><i class="icon-signout icon-large"></i></button>
                 </p>

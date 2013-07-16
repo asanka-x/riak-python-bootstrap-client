@@ -65,17 +65,6 @@ class DBConnect{
         }
     }
 
-
-
-    public function removeUserBucketKeyMapping($username,$bucket,$key){
-        $query="DELETE FROM `user_key_mappings` WHERE username='".$username."' AND bucket_name='".$bucket."' AND bucket_key='".$key."'";
-        if(!mysql_query($query,$this->con)){
-            return FALSE;
-        }else{
-            return TRUE;
-        }
-    }
-
     public function getUserBuckets($username){
         $query="SELECT DISTINCT(bucket_name) FROM `user_key_mappings` WHERE username='".$username."'";
         $rs=mysql_query($query,$this->con);
@@ -89,6 +78,34 @@ class DBConnect{
             }
         }
         return array("buckets"=>$json);
+    }
+
+    public function removeUserBucketKeyMapping($username,$bucket,$key){
+        $query="DELETE FROM `user_key_mappings` WHERE username='".$username."' AND bucket_name='".$bucket."' AND bucket_key='".$key."'";
+        if(!mysql_query($query,$this->con)){
+            return FALSE;
+        }else{
+            return TRUE;
+        }
+    }
+
+    public function getUserUsage($username){
+        $query="SELECT used,quota FROM `users` WHERE username='".$username."'";
+        $rs=mysql_query($query,$this->con);
+        $json=array();
+        if(mysql_num_rows($rs)==0){
+
+        }else{
+
+            while($row=mysql_fetch_assoc($rs)){
+                $usage=array(
+                    'used'=>$row['used'],
+                    'quota'=>$row['quota']
+                );
+                array_push($json,$usage);
+            }
+        }
+        return array("usage"=>$json);
     }
 
     public function getUserBucketKeys($username,$bucket){

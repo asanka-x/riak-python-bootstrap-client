@@ -27,6 +27,8 @@ var viewModel = function(){
     this.fSize=ko.observable("");
     this.fName=ko.observable("");
 
+    this.userUsage=ko.observable(0);
+
     this.bucketClicked=function(data){
 
         self.showBuckets(false);
@@ -217,6 +219,22 @@ var viewModel = function(){
         }
 
     };
+
+    this.getUserUsage=function(){
+        $.ajax({
+                type: "GET",
+                url: serviceUrl+'?method=getUserUsage',
+                dataType:'json',
+                success: function(result) {
+                    self.userUsage("Usage : "+result.usage[0].used+"KB / "+result.usage[0].quota+"KB");
+                    console.log("SUCCESS! USER USAGE : "+ result.usage[0].used+"KB/"+result.usage[0].quota+"KB");
+                },
+                error: function(e) {
+                    console.log("ERROR! USER USAGE : "+ e.toString());
+                }}
+        );
+    };
+
     this.getBucketList=function(){
         self.showBuckets(true);
         self.showKeys(false);
@@ -369,6 +387,7 @@ $(document).ready(function(){
     ko.applyBindings(vm);
 
     vm.getBucketList();
+    vm.getUserUsage();
 
     document.getElementById('files').addEventListener('change', vm.handleFileSelect, false);
 });
